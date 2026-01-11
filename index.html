@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>100 Hari Pertama di Atas Kapal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #1e3a8a;
+            --secondary: #3b82f6;
+            --accent: #0ea5e9;
+            --light: #f8fafc;
+            --dark: #0f172a;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --gray: #64748b;
+            --light-gray: #e2e8f0;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
+            color: var(--light);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 20px;
+        }
+
+        .ship-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            color: var(--accent);
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, var(--accent), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: var(--light-gray);
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .steps-container {
+            display: grid;
+            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        }
+
+        .step-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .step-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+
+        .step-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--secondary), var(--accent));
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.3s ease;
+        }
+
+        .step-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .step-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .step-number {
+            background: var(--secondary);
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .step-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: white;
+        }
+
+        .step-content {
+            display: none;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 15px;
+            animation: slideDown 0.3s ease;
+        }
+
+        .step-content.active {
+            display: block;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .checklist {
+            list-style: none;
+            margin: 10px 0;
+        }
+
+        .checklist li {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin: 8px 0;
+            line-height: 1.5;
+        }
+
+        .checkbox {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--light-gray);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .checkbox.checked {
+            background: var(--success);
+            border-color: var(--success);
+        }
+
+        .instructions {
+            margin: 10px 0;
+            padding-left: 32px;
+        }
+
+        .instructions p {
+            margin: 8px 0;
+            line-height: 1.6;
+        }
+
+        .highlight {
+            background: rgba(14, 165, 233, 0.2);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+
+        .popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .popup.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .popup-content {
+            background: white;
+            color: var(--dark);
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+
+        .popup.active .popup-content {
+            transform: scale(1);
+        }
+
+        .close-popup {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--gray);
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s ease;
+        }
+
+        .close-popup:hover {
+            background: var(--light-gray);
+        }
+
+        .popup h2 {
+            margin-bottom: 20px;
+            color: var(--primary);
+            text-align: center;
+        }
+
+        .popup-content h3 {
+            margin: 15px 0 10px 0;
+            color: var(--secondary);
+        }
+
+        .popup-content p {
+            margin: 8px 0;
+            line-height: 1.6;
+        }
+
+        .folder-list {
+            list-style: none;
+            margin: 10px 0;
+        }
+
+        .folder-list li {
+            background: var(--light-gray);
+            padding: 8px 12px;
+            border-radius: 8px;
+            margin: 5px 0;
+            font-family: monospace;
+            font-size: 0.9rem;
+        }
+
+        .spreadsheet-list {
+            list-style: none;
+            margin: 10px 0;
+        }
+
+        .spreadsheet-list li {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            background: var(--light-gray);
+            border-radius: 8px;
+            margin: 5px 0;
+            font-family: monospace;
+        }
+
+        .columns {
+            font-size: 0.85rem;
+            color: var(--gray);
+            margin-top: 5px;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            color: var(--light-gray);
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .steps-container {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .step-card {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="ship-icon">⚓</div>
+            <h1>100 Hari Pertama di Atas Kapal</h1>
+            <p class="subtitle">Manual resmi proyek untuk membangun sistem digital maritime yang komprehensif dan terstruktur</p>
+        </header>
+
+        <div class="steps-container" id="stepsContainer">
+            <!-- Steps will be generated by JavaScript -->
+        </div>
+
+        <footer>
+            <p>Siap Rafael 👍 | Proyek Maritime Digital System</p>
+        </footer>
+    </div>
+
+    <div class="popup" id="popup">
+        <div class="popup-content">
+            <button class="close-popup" onclick="closePopup()">×</button>
+            <h2 id="popupTitle"></h2>
+            <div id="popupContent"></div>
+        </div>
+    </div>
+
+    <script>
+        const stepsData = [
+            {
+                number: 1,
+                title: "SIAPKAN ALAT (WAJIB)",
+                checklist: ["Google Drive", "Google Docs", "Google Sheets", "Canva", "CapCut", "TikTok"],
+                instructions: "Pastikan di HP kamu sudah ada semua aplikasi di atas. Kalau belum lengkap, berhenti dulu, install. Kalau sudah, lanjut ke Langkah 2."
+            },
+            {
+                number: 2,
+                title: "BUAT KANTOR PUSAT DIGITAL",
+                checklist: [],
+                instructions: "Buka Google Drive → Tekan (+) Baru → Pilih Folder → Nama: <span class='highlight'>RAFAEL_MARITIME_SYSTEM</span> → Tekan Buat. Masuk ke folder itu.",
+                popupContent: `
+                    <p>Buat folder utama sebagai pusat semua aktivitas digital Anda:</p>
+                    <div class="folder-list">
+                        <li>RAFAEL_MARITIME_SYSTEM</li>
+                    </div>
+                `
+            },
+            {
+                number: 3,
+                title: "BUAT 6 FOLDER UTAMA",
+                checklist: [],
+                instructions: "Di dalam RAFAEL_MARITIME_SYSTEM, buat 6 folder utama dengan cara: (+) → Folder → ketik nama → Buat",
+                popupContent: `
+                    <p>Buat struktur folder dasar untuk mengorganisir semua aset digital:</p>
+                    <div class="folder-list">
+                        <li>1_BUKU_BESAR_LEDGER</li>
+                        <li>2_EBOOK</li>
+                        <li>3_KONTEN_VIDEO</li>
+                        <li>4_DESAIN_CANVA</li>
+                        <li>5_PELATIHAN_MODUL</li>
+                        <li>6_MARKETING</li>
+                    </div>
+                `
+            },
+            {
+                number: 4,
+                title: "BUAT BUKU BESAR (GOOGLE SHEETS)",
+                checklist: [],
+                instructions: "Masuk folder: <span class='highlight'>1_BUKU_BESAR_LEDGER</span>. Sekarang buat 5 file Google Sheets.",
+                popupContent: `
+                    <p>Buat 5 spreadsheet penting untuk melacak semua aktivitas:</p>
+                    <div class="spreadsheet-list">
+                        <div>
+                            <strong>4.1 Progres Harian</strong>
+                            <div class="columns">Tanggal | Fokus Hari Ini | Yang Dikerjakan | Ebook | Konten | Hasil | Catatan</div>
+                        </div>
+                        <div>
+                            <strong>4.2 Ide Konten</strong>
+                            <div class="columns">Tanggal | Judul Video | Topik | Platform | Status | Link</div>
+                        </div>
+                        <div>
+                            <strong>4.3 Penjualan</strong>
+                            <div class="columns">Tanggal | Produk | Sumber | Jumlah | Catatan</div>
+                        </div>
+                        <div>
+                            <strong>4.4 Pembelajaran</strong>
+                            <div class="columns">Tanggal | Materi | Sumber | Insight | Aksi</div>
+                        </div>
+                        <div>
+                            <strong>4.5 Evaluasi</strong>
+                            <div class="columns">Minggu | Yang Berhasil | Yang Gagal | Perbaikan | Target</div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                number: 5,
+                title: "SIAPKAN TEMPAT EBOOK",
+                checklist: [],
+                instructions: "Masuk folder: <span class='highlight'>2_EBOOK</span>. Buat subfolder: Draft, Final, Cover, Revisi. Di Draft, buat Google Docs: <span class='highlight'>Ebook_100_Hari_Pertama_di_Atas_Kapal_Draft</span>",
+                popupContent: `
+                    <p>Struktur folder untuk pengembangan ebook:</p>
+                    <div class="folder-list">
+                        <li>2_EBOOK/</li>
+                        <li>├── Draft/</li>
+                        <li>│   └── Ebook_100_Hari_Pertama_di_Atas_Kapal_Draft</li>
+                        <li>├── Final/</li>
+                        <li>├── Cover/</li>
+                        <li>└── Revisi/</li>
+                    </div>
+                `
+            },
+            {
+                number: 6,
+                title: "SIAPKAN TEMPAT VIDEO",
+                checklist: [],
+                instructions: "Masuk folder: <span class='highlight'>3_KONTEN_VIDEO</span>. Buat subfolder: Script, Video_Mentah, Video_Jadi, Template. Di Script, buat Google Docs: <span class='highlight'>Script_Video_100_Hari</span>",
+                popupContent: `
+                    <p>Struktur folder untuk produksi konten video:</p>
+                    <div class="folder-list">
+                        <li>3_KONTEN_VIDEO/</li>
+                        <li>├── Script/</li>
+                        <li>│   └── Script_Video_100_Hari</li>
+                        <li>├── Video_Mentah/</li>
+                        <li>├── Video_Jadi/</li>
+                        <li>└── Template/</li>
+                    </div>
+                `
+            },
+            {
+                number: 7,
+                title: "SIAPKAN TEMPAT DESAIN",
+                checklist: [],
+                instructions: "Masuk: <span class='highlight'>4_DESAIN_CANVA</span>. Buat subfolder: Cover, Poster, Feed, Presentasi",
+                popupContent: `
+                    <p>Struktur folder untuk aset desain:</p>
+                    <div class="folder-list">
+                        <li>4_DESAIN_CANVA/</li>
+                        <li>├── Cover/</li>
+                        <li>├── Poster/</li>
+                        <li>├── Feed/</li>
+                        <li>└── Presentasi/</li>
+                    </div>
+                `
+            },
+            {
+                number: 8,
+                title: "SIAPKAN TEMPAT PELATIHAN",
+                checklist: [],
+                instructions: "Masuk: <span class='highlight'>5_PELATIHAN_MODUL</span>. Buat subfolder: Materi, Video, Sertifikat",
+                popupContent: `
+                    <p>Struktur folder untuk materi pelatihan:</p>
+                    <div class="folder-list">
+                        <li>5_PELATIHAN_MODUL/</li>
+                        <li>├── Materi/</li>
+                        <li>├── Video/</li>
+                        <li>└── Sertifikat/</li>
+                    </div>
+                `
+            },
+            {
+                number: 9,
+                title: "SIAPKAN FOLDER MARKETING",
+                checklist: [],
+                instructions: "Masuk: <span class='highlight'>6_MARKETING</span>. Buat subfolder: Copywriting, Data_Audience, Strategi. Di Copywriting, buat Google Docs: <span class='highlight'>Teks_Promosi_Ebook</span>",
+                popupContent: `
+                    <p>Struktur folder untuk strategi marketing:</p>
+                    <div class="folder-list">
+                        <li>6_MARKETING/</li>
+                        <li>├── Copywriting/</li>
+                        <li>│   └── Teks_Promosi_Ebook</li>
+                        <li>├── Data_Audience/</li>
+                        <li>└── Strategi/</li>
+                    </div>
+                `
+            },
+            {
+                number: 10,
+                title: "BUAT GERBANG PUBLIK (LYNK.ID)",
+                checklist: [],
+                instructions: "Buka browser → ketik lynk.id → Daftar/login pakai Google → Buat username (contoh): lynk.id/100haridikapal. Buat tombol: 📘 Download Ebook, 💬 WhatsApp, 📢 WA Channel, 🎥 TikTok, 🎓 Pelatihan",
+                popupContent: `
+                    <p>Buat landing page publik dengan LYNK.ID:</p>
+                    <ul>
+                        <li><strong>Username:</strong> lynk.id/100haridikapal</li>
+                        <li><strong>Tombol yang harus dibuat:</strong></li>
+                        <li>📘 Download Ebook (link ke Google Drive)</li>
+                        <li>💬 WhatsApp (link ke WhatsApp)</li>
+                        <li>📢 WA Channel (link ke channel WhatsApp)</li>
+                        <li>🎥 TikTok (link ke profil TikTok)</li>
+                        <li>🎓 Pelatihan (kosongkan dulu, akan diisi nanti)</li>
+                    </ul>
+                `
+            },
+            {
+                number: 11,
+                title: "PRODUKSI PERTAMA (HARI INI)",
+                checklist: ["Isi Progres_Harian (hari ini ngapain)", "Tulis minimal 1 halaman ebook", "Buat 1 video pendek"],
+                instructions: "Hari pertama cukup lakukan 3 hal di atas. Fokus pada eksekusi, bukan kesempurnaan."
+            },
+            {
+                number: 12,
+                title: "MULAI ISI EBOOK (HARI 1)",
+                checklist: [],
+                instructions: "Buka: <span class='highlight'>Ebook_100_Hari_Pertama_di_Atas_Kapal_Draft</span>. Copy struktur dan mulai tulis Bab 1 — Hari Nol (Sebelum Naik Kapal).",
+                popupContent: `
+                    <p>Struktur awal ebook yang harus diisi:</p>
+                    <h3>Judul:</h3>
+                    <p><strong>100 Hari Pertama di Atas Kapal</strong><br>Panduan mental, kebiasaan, dan realita awal kehidupan pelaut</p>
+                    
+                    <h3>BAB 1 — Hari Nol (Sebelum Naik Kapal)</h3>
+                    <ul>
+                        <li>mental yang harus disiapkan</li>
+                        <li>kesalahan taruna</li>
+                        <li>barang wajib</li>
+                        <li>ekspektasi vs realita</li>
+                    </ul>
+                    <p><em>Tulis bebas dulu. Tidak usah rapi. Yang penting jadi.</em></p>
+                `
+            }
+        ];
+
+        function generateSteps() {
+            const container = document.getElementById('stepsContainer');
+            stepsData.forEach((step, index) => {
+                const stepCard = document.createElement('div');
+                stepCard.className = 'step-card';
+                stepCard.onclick = () => toggleStep(stepCard, index);
+                
+                let checklistHTML = '';
+                if (step.checklist.length > 0) {
+                    checklistHTML = '<ul class="checklist">';
+                    step.checklist.forEach(item => {
+                        checklistHTML += `<li><div class="checkbox">✓</div>${item}</li>`;
+                    });
+                    checklistHTML += '</ul>';
+                }
+                
+                stepCard.innerHTML = `
+                    <div class="step-header">
+                        <div class="step-number">${step.number}</div>
+                        <div class="step-title">✅ LANGKAH ${step.number} — ${step.title}</div>
+                    </div>
+                    ${checklistHTML}
+                    <div class="instructions">
+                        <p>${step.instructions}</p>
+                    </div>
+                    <div class="step-content" id="content-${index}">
+                        ${step.popupContent ? `<button onclick="showPopup(${index})" style="background: var(--accent); color: white; border: none; padding: 8px 16px; border-radius: 8px; margin-top: 10px; cursor: pointer; font-size: 0.9rem;">Tampilkan Struktur Lengkap</button>` : ''}
+                    </div>
+                `;
+                
+                container.appendChild(stepCard);
+            });
+        }
+
+        function toggleStep(card, index) {
+            const content = card.querySelector('.step-content');
+            const isActive = content.classList.contains('active');
+            
+            // Close all other steps
+            document.querySelectorAll('.step-content').forEach(el => {
+                el.classList.remove('active');
+            });
+            document.querySelectorAll('.step-card').forEach(el => {
+                el.classList.remove('active');
+            });
+            
+            // Toggle current step
+            if (!isActive) {
+                content.classList.add('active');
+                card.classList.add('active');
+            }
+        }
+
+        function showPopup(index) {
+            const step = stepsData[index];
+            document.getElementById('popupTitle').textContent = `LANGKAH ${step.number} — ${step.title}`;
+            document.getElementById('popupContent').innerHTML = step.popupContent;
+            document.getElementById('popup').classList.add('active');
+        }
+
+        function closePopup() {
+            document.getElementById('popup').classList.remove('active');
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', generateSteps);
+
+        // Close popup when clicking outside
+        document.getElementById('popup').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('popup')) {
+                closePopup();
+            }
+        });
+    </script>
+</body>
+</html>
+
